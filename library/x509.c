@@ -188,7 +188,10 @@ static int x509_get_hash_alg( const mbedtls_x509_buf *alg, mbedtls_md_type_t *md
     if( p == end )
         return( 0 );
 
-    if( ( ret = mbedtls_asn1_get_tag( &p, end, &len, MBEDTLS_ASN1_NULL ) ) != 0 || len != 0 )
+    if( ( ret = mbedtls_asn1_get_tag( &p, end, &len, MBEDTLS_ASN1_NULL ) ) != 0 )
+        return( MBEDTLS_ERR_X509_INVALID_ALG + ret );
+
+    if( len != 0 )
         return( MBEDTLS_ERR_X509_INVALID_ALG + ret );
 
     if( p != end )
