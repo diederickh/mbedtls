@@ -6,6 +6,10 @@ Bugfix
    * Fix the redefinition of macro ssl_set_bio to an undefined symbol
      mbedtls_ssl_set_bio_timeout in compat-1.3.h, by removing it.
      Found by omlib-lin. #673
+   * According to rfc1779, commas in strings should be either in quotes,
+     or preceded by escape character.
+     Add the escape character and the quotes into the certificate itself.
+     Raised in #769 by cwtios
 
 = mbed TLS 2.4.1 branch released 2016-12-13
 
