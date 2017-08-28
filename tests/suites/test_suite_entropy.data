@@ -22,9 +22,6 @@ entropy_func_len:2:0
 Entropy output length #4
 entropy_func_len:31:0
 
-Entropy output length #5
-entropy_func_len:65:MBEDTLS_ERR_ENTROPY_SOURCE_FAILED
-
 Entropy failing source
 entropy_source_fail:"data_files/entropy_seed"
 
