@@ -1,5 +1,11 @@
 mbed TLS ChangeLog (Sorted per branch, date)
 
+= mbed TLS x.x.x branch released xxxx-xx-xx
+
+Bugfix
+   * return error code of `mbedtls_aes_crypt_ecb` if failed, when calling it from
+     other modes. FIx for #1092 reported by adustm
+
 = mbed TLS 2.11.0 branch released 2018-06-18
 
 Features
