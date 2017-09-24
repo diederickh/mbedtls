@@ -90,15 +90,13 @@ int mbedtls_ctr_drbg_seed_entropy_len(
     /*
      * Initialize with an empty key
      */
-    if( ( ret = mbedtls_aes_setkey_enc( &ctx->aes_ctx, key, MBEDTLS_CTR_DRBG_KEYBITS ) ) != 0 )
-    {
-        return( ret );
-    }
+    if( ( ret = mbedtls_aes_setkey_enc( &ctx->aes_ctx,
+                                        key, MBEDTLS_CTR_DRBG_KEYBITS ) ) != 0 )
+            return( ret );
 
     if( ( ret = mbedtls_ctr_drbg_reseed( ctx, custom, len ) ) != 0 )
-    {
         return( ret );
-    }
+
     return( 0 );
 }
 
@@ -447,7 +445,8 @@ int mbedtls_ctr_drbg_random_with_add( void *p_rng,
 
     ctx->reseed_counter++;
 
-    return( 0 );
+exit:
+    return( ret );
 }
 
 int mbedtls_ctr_drbg_random( void *p_rng, unsigned char *output, size_t output_len )

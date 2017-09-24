@@ -1014,7 +1014,7 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
                     const unsigned char *input,
                     unsigned char *output )
 {
-    int i, ret;
+    int i, ret = 0;
     unsigned char temp[16];
 
     if( length % 16 )
@@ -1248,7 +1248,7 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
                        const unsigned char *input,
                        unsigned char *output )
 {
-    int c, ret;
+    int c, ret = 0;
     size_t n = *iv_off;
 
     if( mode == MBEDTLS_AES_DECRYPT )
@@ -1291,7 +1291,7 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
 end:
     if ( ret != 0 )
         mbedtls_zeroize( output, length );
-    return( 0 );
+    return( ret );
 }
 
 /*
@@ -1306,7 +1306,7 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
 {
     unsigned char c;
     unsigned char ov[17];
-    int ret;
+    int ret = 0;
 
     while( length-- )
     {
@@ -1328,7 +1328,7 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
 end:
     if ( ret != 0 )
         mbedtls_zeroize( output, length );
-    return( 0 );
+    return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CFB */
 
@@ -1378,7 +1378,7 @@ int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
                        const unsigned char *input,
                        unsigned char *output )
 {
-    int c, i, ret;
+    int c, i, ret = 0;
     size_t n = *nc_off;
 
     if ( n > 0x0F )
@@ -1387,7 +1387,8 @@ int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
     while( length-- )
     {
         if( n == 0 ) {
-            ret = mbedtls_aes_crypt_ecb( ctx, MBEDTLS_AES_ENCRYPT, nonce_counter, stream_block );
+            ret = mbedtls_aes_crypt_ecb( ctx, MBEDTLS_AES_ENCRYPT,
+                                         nonce_counter, stream_block );
             if ( ret != 0 )
                 goto end;
 
@@ -1405,7 +1406,7 @@ int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
 end:
     if ( ret != 0 )
         mbedtls_zeroize( output, length );
-    return( 0 );
+    return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CTR */
 
