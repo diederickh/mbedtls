@@ -303,6 +303,7 @@ void mbedtls_ctr_drbg_update( mbedtls_ctr_drbg_context *ctx,
                       const unsigned char *additional, size_t add_len )
 {
     unsigned char add_input[MBEDTLS_CTR_DRBG_SEEDLEN];
+    int ret = 0;
 
     if( add_len > 0 )
     {
@@ -311,8 +312,17 @@ void mbedtls_ctr_drbg_update( mbedtls_ctr_drbg_context *ctx,
         if( add_len > MBEDTLS_CTR_DRBG_MAX_SEED_INPUT )
             add_len = MBEDTLS_CTR_DRBG_MAX_SEED_INPUT;
 
-        block_cipher_df( add_input, additional, add_len );
-        ctr_drbg_update_internal( ctx, add_input );
+        /*
+         * block_cipher_df() and ctr_drbg_update_internal() may return error codes.
+         * If they return error, abort the operation, since this public API
+         * does not have a return code, we can't return the error codes to the caller
+         */
+        ret = block_cipher_df( add_input, additional, add_len );
+        if( ret != 0)
+            return;
+        ret = ctr_drbg_update_internal( ctx, add_input );
+        if( ret != 0)
+            return;
     }
 }
 
