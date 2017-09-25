@@ -6,9 +6,6 @@ Bugfix
    * Ignore iv in mbedtls_cipher_set_iv() when the cipher mode is MBEDTLS_MODE_ECB
      Fix for #1091 raised by ezdevelop
 
-Changes
-   * Add tests for the mbedtls_cipher_crypt() API
-
 = mbed TLS 2.6.0 branch released 2017-08-10
 
 Security
