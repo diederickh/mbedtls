@@ -318,10 +318,10 @@ void mbedtls_ctr_drbg_update( mbedtls_ctr_drbg_context *ctx,
          * does not have a return code, we can't return the error codes to the caller
          */
         ret = block_cipher_df( add_input, additional, add_len );
-        if( ret != 0)
+        if( ret != 0 )
             return;
         ret = ctr_drbg_update_internal( ctx, add_input );
-        if( ret != 0)
+        if( ret != 0 )
             return;
     }
 }
