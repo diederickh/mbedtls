@@ -1016,6 +1016,8 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
 {
     int i, ret = 0;
     unsigned char temp[16];
+    const size_t orig_length = length;
+    unsigned char* out = output;
 
     if( length % 16 )
         return( MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH );
@@ -1072,7 +1074,7 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
 
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( output, length );
+        mbedtls_zeroize( out, orig_length );
     return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CBC */
@@ -1250,6 +1252,8 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
 {
     int c, ret = 0;
     size_t n = *iv_off;
+    const size_t orig_length = length;
+    unsigned char* out = output;
 
     if( mode == MBEDTLS_AES_DECRYPT )
     {
@@ -1290,7 +1294,7 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
 
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( output, length );
+        mbedtls_zeroize( out, orig_length );
     return( ret );
 }
 
@@ -1307,6 +1311,8 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
     unsigned char c;
     unsigned char ov[17];
     int ret = 0;
+    const size_t orig_length = length;
+    unsigned char* out = output;
 
     while( length-- )
     {
@@ -1327,7 +1333,7 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
     }
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( output, length );
+        mbedtls_zeroize( out, orig_length );
     return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CFB */
@@ -1380,6 +1386,8 @@ int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
 {
     int c, i, ret = 0;
     size_t n = *nc_off;
+    const size_t orig_length = length;
+    unsigned char* out = output;
 
     if ( n > 0x0F )
         return( MBEDTLS_ERR_AES_BAD_INPUT_DATA );
@@ -1405,7 +1413,7 @@ int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
     *nc_off = n;
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( output, length );
+        mbedtls_zeroize( out, orig_length );
     return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CTR */
