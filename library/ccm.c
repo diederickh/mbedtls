@@ -403,7 +403,8 @@ static const unsigned char res[NB_TESTS][32] = {
 int mbedtls_ccm_self_test( int verbose )
 {
     mbedtls_ccm_context ctx;
-    unsigned char out[32];
+    unsigned char plaintext[24];
+    unsigned char cipertext[32];
     size_t i;
     int ret;
 
@@ -422,27 +423,32 @@ int mbedtls_ccm_self_test( int verbose )
         if( verbose != 0 )
             mbedtls_printf( "  CCM-AES #%u: ", (unsigned int) i + 1 );
 
+        memset( plaintext, 0, 24);
+        memset( cipertext, 0, 32);
+        memcpy( plaintext, msg, msg_len[i]);
+
         ret = mbedtls_ccm_encrypt_and_tag( &ctx, msg_len[i],
-                                   iv, iv_len[i], ad, add_len[i],
-                                   msg, out,
-                                   out + msg_len[i], tag_len[i] );
+                                           iv, iv_len[i], ad, add_len[i],
+                                           plaintext, cipertext,
+                                           cipertext + msg_len[i], tag_len[i] );
 
         if( ret != 0 ||
-            memcmp( out, res[i], msg_len[i] + tag_len[i] ) != 0 )
+            memcmp( cipertext, res[i], msg_len[i] + tag_len[i] ) != 0 )
         {
             if( verbose != 0 )
                 mbedtls_printf( "failed\n" );
 
             return( 1 );
         }
+        memset( plaintext, 0, 24 );
 
         ret = mbedtls_ccm_auth_decrypt( &ctx, msg_len[i],
-                                iv, iv_len[i], ad, add_len[i],
-                                res[i], out,
-                                res[i] + msg_len[i], tag_len[i] );
+                                        iv, iv_len[i], ad, add_len[i],
+                                        cipertext, plaintext,
+                                        res[i] + msg_len[i], tag_len[i] );
 
         if( ret != 0 ||
-            memcmp( out, msg, msg_len[i] ) != 0 )
+            memcmp( plaintext, msg, msg_len[i] ) != 0 )
         {
             if( verbose != 0 )
                 mbedtls_printf( "failed\n" );
