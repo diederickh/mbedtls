@@ -49,12 +49,14 @@
 #endif /* MBEDTLS_PLATFORM_C */
 #endif /* MBEDTLS_SELF_TEST && MBEDTLS_AES_C */
 
-#if !defined(MBEDTLS_CCM_ALT)
-
+#if !defined(MBEDTLS_CCM_ALT) || defined(MBEDTLS_SELF_TEST)
 /* Implementation that should never be optimized out by the compiler */
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = (unsigned char*)v; while( n-- ) *p++ = 0;
 }
+#endif
+
+#if !defined(MBEDTLS_CCM_ALT)
 
 #define CCM_ENCRYPT 0
 #define CCM_DECRYPT 1
@@ -358,8 +360,8 @@ int mbedtls_ccm_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
  */
 
 #define NB_TESTS 3
-#define PLAINTEXT_MAX_LENGTH  24
-#define CIPHERTEXT_MAX_LENGTH 32
+#define CCM_SELFTEST_PT_MAX_LEN  24
+#define CCM_SELFTEST_CT_MAX_LEN 32
 /*
  * The data is the same for all tests, only the used length changes
  */
@@ -379,7 +381,7 @@ static const unsigned char ad[] = {
     0x10, 0x11, 0x12, 0x13
 };
 
-static const unsigned char msg[PLAINTEXT_MAX_LENGTH] = {
+static const unsigned char msg[CCM_SELFTEST_PT_MAX_LEN] = {
     0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27,
     0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
     0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
@@ -390,7 +392,7 @@ static const size_t add_len[NB_TESTS] = { 8, 16, 20 };
 static const size_t msg_len[NB_TESTS] = { 4, 16, 24 };
 static const size_t tag_len[NB_TESTS] = { 4, 6,  8  };
 
-static const unsigned char res[NB_TESTS][CIPHERTEXT_MAX_LENGTH] = {
+static const unsigned char res[NB_TESTS][CCM_SELFTEST_CT_MAX_LEN] = {
     {   0x71, 0x62, 0x01, 0x5b, 0x4d, 0xac, 0x25, 0x5d },
     {   0xd2, 0xa1, 0xf0, 0xe0, 0x51, 0xea, 0x5f, 0x62,
         0x08, 0x1a, 0x77, 0x92, 0x07, 0x3d, 0x59, 0x3d,
@@ -404,8 +406,13 @@ static const unsigned char res[NB_TESTS][CIPHERTEXT_MAX_LENGTH] = {
 int mbedtls_ccm_self_test( int verbose )
 {
     mbedtls_ccm_context ctx;
-    unsigned char plaintext[PLAINTEXT_MAX_LENGTH];
-    unsigned char cipertext[CIPHERTEXT_MAX_LENGTH];
+    /*
+     * Some HW accelerators require the input and output buffers to be aligned
+     * and / or to be contiguous. Define local buffers on the stack, to have contiguous
+     * aligned buffers for the accelerators.
+     */
+    unsigned char plaintext[CCM_SELFTEST_PT_MAX_LEN];
+    unsigned char cipertext[CCM_SELFTEST_CT_MAX_LEN];
     size_t i;
     int ret;
 
@@ -424,8 +431,8 @@ int mbedtls_ccm_self_test( int verbose )
         if( verbose != 0 )
             mbedtls_printf( "  CCM-AES #%u: ", (unsigned int) i + 1 );
 
-        memset( plaintext, 0, PLAINTEXT_MAX_LENGTH );
-        memset( cipertext, 0, CIPHERTEXT_MAX_LENGTH );
+        memset( plaintext, 0, CCM_SELFTEST_PT_MAX_LEN );
+        memset( cipertext, 0, CCM_SELFTEST_CT_MAX_LEN );
         memcpy( plaintext, msg, msg_len[i]);
 
         ret = mbedtls_ccm_encrypt_and_tag( &ctx, msg_len[i],
@@ -441,7 +448,7 @@ int mbedtls_ccm_self_test( int verbose )
 
             return( 1 );
         }
-        memset( plaintext, 0, PLAINTEXT_MAX_LENGTH );
+        mbedtls_zeroize( plaintext, CCM_SELFTEST_PT_MAX_LEN );
 
         ret = mbedtls_ccm_auth_decrypt( &ctx, msg_len[i],
                                         iv, iv_len[i], ad, add_len[i],
