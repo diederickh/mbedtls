@@ -48,6 +48,11 @@
 extern "C" {
 #endif
 
+/*! The 64-bit default ICV for KW mode. */
+#define MBEDTLS_KW_ICV1             {0xA6A6A6A6, 0xA6A6A6A6}
+/*! The 32-bit default ICV for KWP mode. */
+#define MBEDTLS_KW_ICV2             {0xA65959A6, 0x00000000}
+
 #if !defined(MBEDTLS_KW_ALT)
 // Regular implementation
 //
@@ -86,6 +91,7 @@ void mbedtls_kw_init( mbedtls_kw_context *ctx, int mode );
  * \param cipher    The 128-bit block cipher to use. Currently supports only AES.
  * \param key       The encryption key.
  * \param keybits   The key size in bits. This must be acceptable by the cipher. Must be 128.
+ * \param isWrap    Determines whether the next operation is wrapping or unwrapping
  *
  * \return          \c 0 on success.
  * \return          A KW or cipher-specific error code on failure.
@@ -93,7 +99,8 @@ void mbedtls_kw_init( mbedtls_kw_context *ctx, int mode );
 int mbedtls_kw_setkey( mbedtls_kw_context *ctx,
                        mbedtls_cipher_id_t cipher,
                        const unsigned char *key,
-                       unsigned int keybits );
+                       unsigned int keybits,
+                       const int isWrap );
 
 /**
  * \brief   This function releases and clears the specified KW context
