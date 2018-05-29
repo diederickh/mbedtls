@@ -718,6 +718,8 @@ void mbedtls_strerror( int ret, char *buf, size_t buflen )
 #if defined(MBEDTLS_KW_C)
     if( use_ret == -(MBEDTLS_ERR_KW_BAD_INPUT) )
         mbedtls_snprintf( buf, buflen, "KW - Bad input parameters to the function" );
+    if( use_ret == -(MBEDTLS_ERR_KW_AUTH_FAILED) )
+        mbedtls_snprintf( buf, buflen, "KW - Authenticated decryption failed" );
     if( use_ret == -(MBEDTLS_ERR_KW_HW_ACCEL_FAILED) )
         mbedtls_snprintf( buf, buflen, "KW - KW hardware accelerator failed" );
 #endif /* MBEDTLS_KW_C */

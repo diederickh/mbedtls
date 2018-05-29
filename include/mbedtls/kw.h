@@ -39,7 +39,8 @@
 #include "cipher.h"
 
 #define MBEDTLS_ERR_KW_BAD_INPUT       -0x0080 /**< Bad input parameters to the function. */
-#define MBEDTLS_ERR_KW_HW_ACCEL_FAILED -0x0082 /**< KW hardware accelerator failed. */
+#define MBEDTLS_ERR_KW_AUTH_FAILED     -0x0082 /**< Authenticated decryption failed. */
+#define MBEDTLS_ERR_KW_HW_ACCEL_FAILED -0x0084 /**< KW hardware accelerator failed. */
 
 #define MBEDTLS_KEY_WRAPPING_MODE_KW    0
 #define MBEDTLS_KEY_WRAPPING_MODE_KWP   1
@@ -51,7 +52,7 @@ extern "C" {
 /*! The 64-bit default ICV for KW mode. */
 #define MBEDTLS_KW_ICV1             {0xA6A6A6A6, 0xA6A6A6A6}
 /*! The 32-bit default ICV for KWP mode. */
-#define MBEDTLS_KW_ICV2             {0xA65959A6, 0x00000000}
+#define MBEDTLS_KW_ICV2             {0xA65959A6}
 
 #if !defined(MBEDTLS_KW_ALT)
 // Regular implementation
@@ -79,7 +80,6 @@ mbedtls_kw_context;
  * \param ctx       The KW context to initialize.
  * \param mode      The KW mode to use (MBEDTLS_KEY_WRAPPING_MODE_KW or MBEDTLS_KEY_WRAPPING_MODE_KWP)
  *
- * \param ctx       The KW context to initialize.
  */
 void mbedtls_kw_init( mbedtls_kw_context *ctx, int mode );
 
