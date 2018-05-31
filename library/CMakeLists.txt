@@ -30,13 +30,13 @@ set(src_crypto
     gcm.c
     havege.c
     hmac_drbg.c
-    kw.c
     md.c
     md2.c
     md4.c
     md5.c
     md_wrap.c
     memory_buffer_alloc.c
+    nist_kw.c
     oid.c
     padlock.c
     pem.c

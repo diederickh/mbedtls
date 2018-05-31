@@ -45,11 +45,6 @@
 extern "C" {
 #endif
 
-/*! The 64-bit default ICV for KW mode. */
-#define MBEDTLS_KW_ICV1             {0xA6A6A6A6, 0xA6A6A6A6}
-/*! The 32-bit default ICV for KWP mode. */
-#define MBEDTLS_KW_ICV2             {0xA65959A6}
-
 #if !defined(MBEDTLS_NIST_KW_ALT)
 // Regular implementation
 //
