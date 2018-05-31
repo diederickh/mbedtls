@@ -33,14 +33,10 @@
  *  This file is part of Mbed TLS (https://tls.mbed.org)
  */
 
-#ifndef MBEDTLS_KW_H
-#define MBEDTLS_KW_H
+#ifndef MBEDTLS_NIST_KW_H
+#define MBEDTLS_NIST_KW_H
 
 #include "cipher.h"
-
-#define MBEDTLS_ERR_KW_BAD_INPUT       -0x0080 /**< Bad input parameters to the function. */
-#define MBEDTLS_ERR_KW_AUTH_FAILED     -0x0082 /**< Authenticated decryption failed. */
-#define MBEDTLS_ERR_KW_HW_ACCEL_FAILED -0x0084 /**< KW hardware accelerator failed. */
 
 #define MBEDTLS_KEY_WRAPPING_MODE_KW    0
 #define MBEDTLS_KEY_WRAPPING_MODE_KWP   1
@@ -54,7 +50,7 @@ extern "C" {
 /*! The 32-bit default ICV for KWP mode. */
 #define MBEDTLS_KW_ICV2             {0xA65959A6}
 
-#if !defined(MBEDTLS_KW_ALT)
+#if !defined(MBEDTLS_NIST_KW_ALT)
 // Regular implementation
 //
 
@@ -63,25 +59,23 @@ extern "C" {
  *           to the APIs called.
  */
 typedef struct {
-    int                      mode;          /*!< The KW mode used. */
     mbedtls_cipher_context_t cipher_ctx;    /*!< The cipher context used. */
 }
-mbedtls_kw_context;
+mbedtls_nist_kw_context;
 
-#else  /* MBEDTLS_KW_ALT */
-#include "kw_alt.h"
-#endif /* MBEDTLS_KW_ALT */
+#else  /* MBEDTLS_NIST_KW_ALT */
+#include "nist_kw_alt.h"
+#endif /* MBEDTLS_NIST_KW_ALT */
 
 /**
  * \brief           This function initializes the specified KW context,
  *                  to make references valid, and prepare the context
- *                  for mbedtls_kw_setkey() or mbedtls_kw_free().
+ *                  for mbedtls_nist_kw_setkey() or mbedtls_nist_kw_free().
  *
  * \param ctx       The KW context to initialize.
- * \param mode      The KW mode to use (MBEDTLS_KEY_WRAPPING_MODE_KW or MBEDTLS_KEY_WRAPPING_MODE_KWP)
  *
  */
-void mbedtls_kw_init( mbedtls_kw_context *ctx, int mode );
+void mbedtls_nist_kw_init( mbedtls_nist_kw_context *ctx );
 
 /**
  * \brief           This function initializes the KW context set in the
@@ -96,7 +90,7 @@ void mbedtls_kw_init( mbedtls_kw_context *ctx, int mode );
  * \return          \c 0 on success.
  * \return          A KW or cipher-specific error code on failure.
  */
-int mbedtls_kw_setkey( mbedtls_kw_context *ctx,
+int mbedtls_nist_kw_setkey( mbedtls_nist_kw_context *ctx,
                        mbedtls_cipher_id_t cipher,
                        const unsigned char *key,
                        unsigned int keybits,
@@ -108,12 +102,13 @@ int mbedtls_kw_setkey( mbedtls_kw_context *ctx,
  *
  * \param ctx       The KW context to clear.
  */
-void mbedtls_kw_free( mbedtls_kw_context *ctx );
+void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
 
 /**
  * \brief           This function encrypts a buffer using KW.
  *
  * \param ctx       The KW context to use for encryption.
+ * \param mode      The KW mode to use (MBEDTLS_KEY_WRAPPING_MODE_KW or MBEDTLS_KEY_WRAPPING_MODE_KWP)
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
  * \param output    The buffer holding the output data.
@@ -124,7 +119,7 @@ void mbedtls_kw_free( mbedtls_kw_context *ctx );
  * \return          \c 0 on success.
  * \return          A KW or cipher-specific error code on failure.
  */
-int mbedtls_kw_wrap( mbedtls_kw_context *ctx,
+int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, int mode,
                      const unsigned char *input, size_t in_len,
                      unsigned char *output, size_t* out_len );
 
@@ -132,6 +127,7 @@ int mbedtls_kw_wrap( mbedtls_kw_context *ctx,
  * \brief           This function encrypts a buffer using KW.
  *
  * \param ctx       The KW context to use for encryption.
+ * \param mode      The KW mode to use (MBEDTLS_KEY_WRAPPING_MODE_KW or MBEDTLS_KEY_WRAPPING_MODE_KWP)
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
  * \param output    The buffer holding the output data.
@@ -141,7 +137,7 @@ int mbedtls_kw_wrap( mbedtls_kw_context *ctx,
  * \return          \c 0 on success.
  * \return          A KW or cipher-specific error code on failure.
  */
-int mbedtls_kw_unwrap( mbedtls_kw_context *ctx,
+int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, int mode,
                        const unsigned char *input, size_t in_len,
                        unsigned char *output, size_t* out_len );
 
@@ -153,11 +149,11 @@ int mbedtls_kw_unwrap( mbedtls_kw_context *ctx,
  * \return         \c 0 on success.
  * \return         \c 1 on failure.
  */
-int mbedtls_kw_self_test( int verbose );
+int mbedtls_nist_kw_self_test( int verbose );
 #endif /* MBEDTLS_SELF_TEST && MBEDTLS_AES_C */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* MBEDTLS_KW_H */
+#endif /* MBEDTLS_NIST_KW_H */

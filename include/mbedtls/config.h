@@ -279,7 +279,7 @@
 //#define MBEDTLS_DHM_ALT
 //#define MBEDTLS_ECJPAKE_ALT
 //#define MBEDTLS_GCM_ALT
-//#define MBEDTLS_KW_ALT
+//#define MBEDTLS_NIST_KW_ALT
 //#define MBEDTLS_MD2_ALT
 //#define MBEDTLS_MD4_ALT
 //#define MBEDTLS_MD5_ALT
@@ -2107,7 +2107,7 @@
 #define MBEDTLS_HMAC_DRBG_C
 
 /**
- * \def MBEDTLS_KW_C
+ * \def MBEDTLS_NIST_KW_C
  *
  * Enable the Key Wrapping mode for 128-bit block cipher,
  * As defined in NIST SP800-38F
@@ -2117,7 +2117,7 @@
  * Requires: MBEDTLS_AES_C
  *
  */
-//#define MBEDTLS_KW_C
+//#define MBEDTLS_NIST_KW_C
 
 /**
  * \def MBEDTLS_MD_C

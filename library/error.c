@@ -105,10 +105,6 @@
 #include "mbedtls/hmac_drbg.h"
 #endif
 
-#if defined(MBEDTLS_KW_C)
-#include "mbedtls/kw.h"
-#endif
-
 #if defined(MBEDTLS_MD_C)
 #include "mbedtls/md.h"
 #endif
@@ -714,15 +710,6 @@ void mbedtls_strerror( int ret, char *buf, size_t buflen )
     if( use_ret == -(MBEDTLS_ERR_HMAC_DRBG_ENTROPY_SOURCE_FAILED) )
         mbedtls_snprintf( buf, buflen, "HMAC_DRBG - The entropy source failed" );
 #endif /* MBEDTLS_HMAC_DRBG_C */
-
-#if defined(MBEDTLS_KW_C)
-    if( use_ret == -(MBEDTLS_ERR_KW_BAD_INPUT) )
-        mbedtls_snprintf( buf, buflen, "KW - Bad input parameters to the function" );
-    if( use_ret == -(MBEDTLS_ERR_KW_AUTH_FAILED) )
-        mbedtls_snprintf( buf, buflen, "KW - Authenticated decryption failed" );
-    if( use_ret == -(MBEDTLS_ERR_KW_HW_ACCEL_FAILED) )
-        mbedtls_snprintf( buf, buflen, "KW - KW hardware accelerator failed" );
-#endif /* MBEDTLS_KW_C */
 
 #if defined(MBEDTLS_MD2_C)
     if( use_ret == -(MBEDTLS_ERR_MD2_HW_ACCEL_FAILED) )
