@@ -9,9 +9,9 @@
  * according to <em>NIST SP 800-38F: Recommendation for Block Cipher Modes of Operation:
  * Methods for Key Wrapping</em>.
  * Its purpose is to protect cryptographic keys.
- * It uses units of 8 Bytes called semiblocks. The minimal number of input semiblocks is:
- * <ul><li>For KW mode: 2 semiblocks.</li>
- * <li>For KWP mode: 1 semiblock.</li></ul>
+ *
+ * It's equivalent is RFC 3394, which defines only KW without KWP
+ * https://tools.ietf.org/html/rfc3394
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #include "cipher.h"
 
-#define MBEDTLS_KEY_WRAPPING_MODE_KW    0
-#define MBEDTLS_KEY_WRAPPING_MODE_KWP   1
+#define MBEDTLS_KW_MODE_KW    0
+#define MBEDTLS_KW_MODE_KWP   1
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,6 +57,9 @@ extern "C" {
 /**
  * \brief    The KW context-type definition. The KW context is passed
  *           to the APIs called.
+ *
+ * \note     The definition of this type may change in future library versions.
+ *           Don't take any assumptions on this context!
  */
 typedef struct {
     mbedtls_cipher_context_t cipher_ctx;    /*!< The cipher context used. */
@@ -83,9 +86,9 @@ void mbedtls_nist_kw_init( mbedtls_nist_kw_context *ctx );
  *
  * \param ctx       The KW context.
  * \param cipher    The 128-bit block cipher to use. Currently supports only AES.
- * \param key       The encryption key.
- * \param keybits   The key size in bits. This must be acceptable by the cipher. Must be 128.
- * \param isWrap    Determines whether the next operation is wrapping or unwrapping
+ * \param key       The Key Encryption Key(KEK).
+ * \param keybits   The KEK size in bits. This must be acceptable by the cipher.
+ * \param isWrap    Determines whether the operation within the context is wrapping or unwrapping
  *
  * \return          \c 0 on success.
  * \return          A KW or cipher-specific error code on failure.
@@ -108,13 +111,16 @@ void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
  * \brief           This function encrypts a buffer using KW.
  *
  * \param ctx       The KW context to use for encryption.
- * \param mode      The KW mode to use (MBEDTLS_KEY_WRAPPING_MODE_KW or MBEDTLS_KEY_WRAPPING_MODE_KWP)
+ * \param mode      The KW mode to use (MBEDTLS_KW_MODE_KW or MBEDTLS_KW_MODE_KWP)
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
+ *                  The input uses units of 8 Bytes called semiblocks.
+ *                  <ul><li>For KW mode: a multiple of semiblocks.</li>
+ *                  <li>For KWP mode: any length</li></ul>
  * \param output    The buffer holding the output data.
- *                  Must be at least \p length Bytes wide.
- * \param out_len   The length of the output data in Bytes.
- *                  Updated to the actual length being written.
+ *                  Must be at least 8 bytes larger than \p in_len for KW
+ *                  and 8 bytes larger rounded up to a multiple of 8 bytes for KWP(15 bytes at most).
+ * \param out_len   The length of the actual length being written.
  *
  * \return          \c 0 on success.
  * \return          A KW or cipher-specific error code on failure.
@@ -127,12 +133,16 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, int mode,
  * \brief           This function encrypts a buffer using KW.
  *
  * \param ctx       The KW context to use for encryption.
- * \param mode      The KW mode to use (MBEDTLS_KEY_WRAPPING_MODE_KW or MBEDTLS_KEY_WRAPPING_MODE_KWP)
+ * \param mode      The KW mode to use (MBEDTLS_KW_MODE_KW or MBEDTLS_KW_MODE_KWP)
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
+ *                  The input uses units of 8 Bytes called semiblocks.
+ *                  THe input must be a multiple of semiblocks.
  * \param output    The buffer holding the output data.
- * \param out_len   The length of the output data in Bytes.
- *                  Updated to the actual length being written.
+ *                  Minimal length for it should be 8 bytes shorter than \p in_len
+ * \param out_len   The length of the actual length being written.
+ *                  for KWP mode, the length could be up to 15 bytes shorter than \p in_len,
+ *                  depending on how much padding was added to the data.
  *
  * \return          \c 0 on success.
  * \return          A KW or cipher-specific error code on failure.
