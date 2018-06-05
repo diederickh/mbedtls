@@ -13,6 +13,10 @@ API Changes
      Therefore, mbedtls_platform_zeroize() is moved to the platform module to
      facilitate testing and maintenance.
 
+Features
+   * Add Key Wrapping algorithm defined by NIST in SP800-38F. Supports only
+     Key Wrapping (KW) and Key Wrapping with Padding (KWP) modes.
+
 = mbed TLS 2.9.0 branch released 2018-04-30
 
 Security
