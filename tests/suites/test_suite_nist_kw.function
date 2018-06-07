@@ -1,0 +1,177 @@
+/* BEGIN_HEADER */
+#include "mbedtls/nist_kw.h"
+/* END_HEADER */
+
+/* BEGIN_DEPENDENCIES
+ * depends_on:MBEDTLS_NIST_KW_C
+ * END_DEPENDENCIES
+ */
+
+/* BEGIN_CASE depends_on:MBEDTLS_SELF_TEST:MBEDTLS_AES_C */
+void mbedtls_nist_kw_self_test( )
+{
+    TEST_ASSERT( mbedtls_nist_kw_self_test( 1 ) == 0 );
+}
+/* END_CASE */
+
+/* BEGIN_CASE */
+void mbedtls_nist_kw_setkey( int cipher_id, int key_size, int is_wrap, int result )
+{
+    mbedtls_nist_kw_context ctx;
+    unsigned char key[32];
+    int ret;
+
+    mbedtls_nist_kw_init( &ctx );
+
+    memset( key, 0x2A, sizeof( key ) );
+    TEST_ASSERT( (unsigned) key_size <= 8 * sizeof( key ) );
+
+    ret = mbedtls_nist_kw_setkey( &ctx, cipher_id, key, key_size, is_wrap );
+    TEST_ASSERT( ret == result );
+
+exit:
+    mbedtls_nist_kw_free( &ctx );
+}
+/* END_CASE */
+
+/* BEGIN_CASE depends_on:MBEDTLS_AES_C */
+void nist_kw_lengths( int in_len, int mode, int iswrap, int res )
+{
+    mbedtls_nist_kw_context ctx;
+    unsigned char key[16];
+    unsigned char* plaintext = NULL;
+    unsigned char* ciphertext = NULL;
+    int unwrap_ret;
+    size_t output_len;
+
+    mbedtls_nist_kw_init( &ctx );
+
+    memset( key, 0, sizeof( key ) );
+
+    plaintext = mbedtls_calloc( 1, in_len );
+    TEST_ASSERT( plaintext != NULL );
+    ciphertext = mbedtls_calloc( 1, in_len + 16 );
+    TEST_ASSERT( ciphertext != NULL );
+
+    memset( plaintext, 0, in_len );
+    memset( ciphertext, 0, in_len + 16 );
+
+
+    TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, MBEDTLS_CIPHER_ID_AES,
+                                     key, 8 * sizeof( key ), iswrap ) == 0 );
+    if ( iswrap == 1)
+    {
+        TEST_ASSERT( mbedtls_nist_kw_wrap( &ctx, mode, plaintext, in_len,
+                                      ciphertext, &output_len ) == res );
+        if( res == 0 )
+        {
+            if( mode == MBEDTLS_KW_MODE_KWP )
+                TEST_ASSERT( output_len <= (size_t)in_len + 16 );
+            else
+                TEST_ASSERT( output_len == (size_t)in_len + 8 );
+        }
+    }
+    else
+    {
+         unwrap_ret = mbedtls_nist_kw_unwrap( &ctx, mode,  ciphertext, in_len,
+                                    plaintext, &output_len );
+
+        if( res == 0 )
+            TEST_ASSERT( unwrap_ret == MBEDTLS_ERR_CIPHER_AUTH_FAILED );
+        else
+            TEST_ASSERT( unwrap_ret == res );
+    }
+
+exit:
+    mbedtls_free( ciphertext );
+    mbedtls_free( plaintext );
+    mbedtls_nist_kw_free( &ctx );
+}
+/* END_CASE */
+
+/* BEGIN_CASE */
+void mbedtls_nist_kw_wrap( int cipher_id, int mode,
+                        char *key_hex, char *msg_hex,
+                        char *result_hex )
+{
+    unsigned char key[32];
+    unsigned char msg[512];
+    unsigned char result[528];
+    unsigned char expected_result[528];
+    mbedtls_nist_kw_context ctx;
+    size_t key_len, msg_len, output_len, result_len;
+
+    mbedtls_nist_kw_init( &ctx );
+
+    memset( key, 0x00, sizeof( key ) );
+    memset( msg, 0x00, sizeof( msg ) );
+    memset( result, 0x00, sizeof( result ) );
+
+    key_len = unhexify( key, key_hex );
+    msg_len = unhexify( msg, msg_hex );
+    result_len = unhexify( expected_result, result_hex );
+
+    TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, cipher_id, key, key_len * 8, 1 ) == 0 );
+
+    /* Test with input == output */
+    TEST_ASSERT( mbedtls_nist_kw_wrap( &ctx, mode, msg, msg_len,
+                 result, &output_len ) == 0 );
+
+    TEST_ASSERT( output_len == result_len );
+
+    TEST_ASSERT( memcmp( expected_result, result, result_len ) == 0 );
+
+exit:
+    mbedtls_nist_kw_free( &ctx );
+}
+/* END_CASE */
+
+/* BEGIN_CASE */
+void mbedtls_nist_kw_unwrap( int cipher_id, int mode,
+                        char *key_hex, char *msg_hex,
+                        char *result_hex )
+{
+    unsigned char key[32];
+    unsigned char msg[528];
+    unsigned char result[528];
+    unsigned char expected_result[528];
+    mbedtls_nist_kw_context ctx;
+    size_t key_len, msg_len, output_len, result_len;
+    int ret;
+
+    mbedtls_nist_kw_init( &ctx );
+
+    memset( key, 0x00, sizeof( key ) );
+    memset( msg, 0x00, sizeof( msg ) );
+    memset( result, 0x00, sizeof( result ) );
+    memset( expected_result, 0x00, sizeof( expected_result ) );
+
+    key_len = unhexify( key, key_hex );
+    msg_len = unhexify( msg, msg_hex );
+
+    if( strcmp( "FAIL", result_hex ) == 0 )
+    {
+        ret = MBEDTLS_ERR_CIPHER_AUTH_FAILED;
+        result_len = -1;
+    }
+    else
+    {
+        ret = 0;
+        result_len = unhexify( expected_result, result_hex );
+    }
+
+    TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, cipher_id, key, key_len * 8, 0 ) == 0 );
+
+    /* Test with input == output */
+    TEST_ASSERT( mbedtls_nist_kw_unwrap( &ctx, mode, msg, msg_len,
+                 result, &output_len ) == ret );
+    if( ret == 0 )
+    {
+        TEST_ASSERT( output_len == result_len );
+        TEST_ASSERT( memcmp( expected_result, result, result_len ) == 0 );
+    }
+
+exit:
+    mbedtls_nist_kw_free( &ctx );
+}
+/* END_CASE */
