@@ -2114,7 +2114,7 @@
  *
  * Module:  library/kw.c
  *
- * Requires: MBEDTLS_AES_C
+ * Requires: MBEDTLS_AES_C and MBEDTLS_CIPHER_C
  *
  */
 //#define MBEDTLS_NIST_KW_C
