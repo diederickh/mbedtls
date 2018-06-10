@@ -10,8 +10,12 @@
  * Methods for Key Wrapping</em>.
  * Its purpose is to protect cryptographic keys.
  *
- * It's equivalent is RFC 3394, which defines only KW without KWP
+ * It's equivalent is RFC 3394, for KW and RFC 5649 for KWP
  * https://tools.ietf.org/html/rfc3394
+ * https://tools.ietf.org/html/rfc5649
+ *
+ * Note: RFC 5649 defines the object IDs for KW and KWP, which is not supported.
+ *
  *
  */
 /*
