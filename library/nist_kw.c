@@ -385,13 +385,13 @@ int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t
 
         if( in_len == KW_SEMIBLOCK_LENGTH * 2 )
         {
-            ret = mbedtls_cipher_update( &ctx->cipher_ctx, input, 16, output, out_len);
+            ret = mbedtls_cipher_update( &ctx->cipher_ctx, input, 16, output, out_len );
             if( ret != 0 )
                 goto cleanup;
         }
         else if( in_len >  KW_SEMIBLOCK_LENGTH * 2 )
         {
-            ret = unwrap( ctx, input, in_len / KW_SEMIBLOCK_LENGTH, output, out_len);
+            ret = unwrap( ctx, input, in_len / KW_SEMIBLOCK_LENGTH, output, out_len );
             if( ret != 0 )
                 return ( ret );
         }
@@ -421,7 +421,7 @@ int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t
          * shift output to point to P
          */
 
-        memcpy( output, output + KW_SEMIBLOCK_LENGTH , Plen);
+        memcpy( output, output + KW_SEMIBLOCK_LENGTH , Plen );
         memset( output + Plen, 0, KW_SEMIBLOCK_LENGTH + padlen );
         *out_len = Plen;
     }
