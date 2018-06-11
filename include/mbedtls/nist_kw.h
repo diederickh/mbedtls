@@ -1,8 +1,8 @@
 /**
- * \file kw.h
+ * \file nist_kw.h
  *
- * \brief This file provides an API key wrapping(KW)
- *        and key wrapping with padding(KWP) as defined in NIST SP800-38F
+ * \brief This file provides API for key wrapping(KW)
+ *        and key wrapping with padding (KWP) as defined in NIST SP 800-38F
  *        https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38F.pdf
  *
  * Key-wrapping specifies a deterministic authenticated-encryption mode of operation,
@@ -10,12 +10,11 @@
  * Methods for Key Wrapping</em>.
  * Its purpose is to protect cryptographic keys.
  *
- * It's equivalent is RFC 3394, for KW and RFC 5649 for KWP
+ * It's equivalent is RFC 3394 for KW, and RFC 5649 for KWP.
  * https://tools.ietf.org/html/rfc3394
  * https://tools.ietf.org/html/rfc5649
  *
  * Note: RFC 5649 defines the object IDs for KW and KWP, which is not supported.
- *
  *
  */
 /*
@@ -42,8 +41,12 @@
 
 #include "cipher.h"
 
-#define MBEDTLS_KW_MODE_KW    0
-#define MBEDTLS_KW_MODE_KWP   1
+typedef enum
+{
+    MBEDTLS_KW_MODE_KW = 0,
+    MBEDTLS_KW_MODE_KWP = 1
+} mbedtls_nist_kw_mode_t;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,106 +57,109 @@ extern "C" {
 //
 
 /**
- * \brief    The KW context-type definition. The KW context is passed
+ * \brief    The key wrapping context-type definition. The key wrapping context is passed
  *           to the APIs called.
  *
  * \note     The definition of this type may change in future library versions.
- *           Don't take any assumptions on this context!
+ *           Don't make any assumptions on this context!
  */
 typedef struct {
     mbedtls_cipher_context_t cipher_ctx;    /*!< The cipher context used. */
 }
 mbedtls_nist_kw_context;
 
-#else  /* MBEDTLS_NIST_KW_ALT */
+#else  /* MBEDTLS_NIST_key wrapping_ALT */
 #include "nist_kw_alt.h"
 #endif /* MBEDTLS_NIST_KW_ALT */
 
 /**
- * \brief           This function initializes the specified KW context,
- *                  to make references valid, and prepare the context
+ * \brief           This function initializes the specified key wrapping context
+ *                  to make references valid and prepare the context
  *                  for mbedtls_nist_kw_setkey() or mbedtls_nist_kw_free().
  *
- * \param ctx       The KW context to initialize.
+ * \param ctx       The key wrapping context to initialize.
  *
  */
 void mbedtls_nist_kw_init( mbedtls_nist_kw_context *ctx );
 
 /**
- * \brief           This function initializes the KW context set in the
+ * \brief           This function initializes the key wrapping context set in the
  *                  \p ctx parameter and sets the encryption key.
  *
- * \param ctx       The KW context.
- * \param cipher    The 128-bit block cipher to use. Currently supports only AES.
- * \param key       The Key Encryption Key(KEK).
+ * \param ctx       The key wrapping context.
+ * \param cipher    The 128-bit block cipher to use. Only AES is supported.
+ * \param key       The Key Encryption Key (KEK).
  * \param keybits   The KEK size in bits. This must be acceptable by the cipher.
- * \param isWrap    Determines whether the operation within the context is wrapping or unwrapping
+ * \param isWrap    Specify whether the operation within the context is wrapping or unwrapping
  *
  * \return          \c 0 on success.
- * \return          A KW or cipher-specific error code on failure.
+ * \return          A key wrapping or cipher-specific error code on failure.
  */
 int mbedtls_nist_kw_setkey( mbedtls_nist_kw_context *ctx,
-                       mbedtls_cipher_id_t cipher,
-                       const unsigned char *key,
-                       unsigned int keybits,
-                       const int isWrap );
+                            mbedtls_cipher_id_t cipher,
+                            const unsigned char *key,
+                            unsigned int keybits,
+                            const int is_wrap );
 
 /**
- * \brief   This function releases and clears the specified KW context
+ * \brief   This function releases and clears the specified key wrapping context
  *          and underlying cipher sub-context.
  *
- * \param ctx       The KW context to clear.
+ * \param ctx       The key wrapping context to clear.
  */
 void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
 
 /**
- * \brief           This function encrypts a buffer using KW.
+ * \brief           This function encrypts a buffer using key wrapping.
  *
- * \param ctx       The KW context to use for encryption.
- * \param mode      The KW mode to use (MBEDTLS_KW_MODE_KW or MBEDTLS_KW_MODE_KWP)
+ * \param ctx       The key wrapping context to use for encryption.
+ * \param mode      The key wrapping mode to use (MBEDTLS_KW_MODE_KW or MBEDTLS_KW_MODE_KWP)
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
  *                  The input uses units of 8 Bytes called semiblocks.
- *                  <ul><li>For KW mode: a multiple of semiblocks.</li>
- *                  <li>For KWP mode: any length</li></ul>
- * \param output    The buffer holding the output data.
- *                  Must be at least 8 bytes larger than \p in_len for KW
- *                  and 8 bytes larger rounded up to a multiple of 8 bytes for KWP(15 bytes at most).
- * \param out_len   The length of the actual length being written.
+ *                  <ul><li>For KW mode: a multiple of 8 bytes between 2 to 2^54-1 semiblocks inclusive. </li>
+ *                  <li>For KWP mode: any length between 1 and 2^32-1 octets inclusive.</li></ul>
+ * \param[out] output    The buffer holding the output data.
+ *                  <ul><li>For KW mode: Must be at least 8 bytes larger than \p in_len.</li>
+ *                  <li>For KWP mode:  Must be at least  8 bytes larger rounded up to a multiple of
+ *                  8 bytes for KWP (15 bytes at most).</li></ul>
+ * \param[out] out_len   The length of the actual length being written.
  *
  * \return          \c 0 on success.
- * \return          A KW or cipher-specific error code on failure.
+ * \return          A key wrapping or cipher-specific error code on failure.
  */
-int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, int mode,
-                     const unsigned char *input, size_t in_len,
-                     unsigned char *output, size_t* out_len );
+int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t mode,
+                          const unsigned char *input, size_t in_len,
+                          unsigned char *output, size_t* out_len );
 
 /**
- * \brief           This function encrypts a buffer using KW.
+ * \brief           This function decrypts a buffer using key wrapping.
  *
- * \param ctx       The KW context to use for encryption.
- * \param mode      The KW mode to use (MBEDTLS_KW_MODE_KW or MBEDTLS_KW_MODE_KWP)
+ * \param ctx       The key wrapping context to use for decryption.
+ * \param mode      The key wrapping mode to use (MBEDTLS_KW_MODE_KW or MBEDTLS_KW_MODE_KWP)
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
  *                  The input uses units of 8 Bytes called semiblocks.
- *                  THe input must be a multiple of semiblocks.
- * \param output    The buffer holding the output data.
- *                  Minimal length for it should be 8 bytes shorter than \p in_len
- * \param out_len   The length of the actual length being written.
- *                  for KWP mode, the length could be up to 15 bytes shorter than \p in_len,
+ *                  The input must be a multiple of semiblocks.
+ *                  <ul><li>For KW mode: a multiple of 8 bytes between 3 to 2^54 semiblocks inclusive. </li>
+ *                  <li>For KWP mode: a multiple of 8 bytes between 2 to 2^29 semiblocks inclusive.</li></ul>
+ * \param[out] output    The buffer holding the output data.
+ *                  The output buffer's minimal length is 8 bytes shorter than \p in_len.
+ * \param[out] out_len   The length of the actual length being written.
+ *                  For KWP mode, the length could be up to 15 bytes shorter than \p in_len,
  *                  depending on how much padding was added to the data.
  *
  * \return          \c 0 on success.
- * \return          A KW or cipher-specific error code on failure.
+ * \return          A key wrapping or cipher-specific error code on failure.
  */
-int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, int mode,
-                       const unsigned char *input, size_t in_len,
-                       unsigned char *output, size_t* out_len );
+int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t mode,
+                            const unsigned char *input, size_t in_len,
+                            unsigned char *output, size_t* out_len );
 
 
 #if defined(MBEDTLS_SELF_TEST) && defined(MBEDTLS_AES_C)
 /**
- * \brief          The KW checkup routine.
+ * \brief          The key wrapping checkup routine.
  *
  * \return         \c 0 on success.
  * \return         \c 1 on failure.

@@ -14,7 +14,7 @@ API Changes
      facilitate testing and maintenance.
 
 Features
-   * Add Key Wrapping algorithm defined by NIST in SP800-38F. Supports only
+   * Add Key Wrapping algorithm defined by NIST in SP 800-38F. Supports only
      Key Wrapping (KW) and Key Wrapping with Padding (KWP) modes.
 
 = mbed TLS 2.9.0 branch released 2018-04-30
