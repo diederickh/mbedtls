@@ -121,9 +121,9 @@ void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
  *                  <li>For KWP mode: any length between 1 and 2^32-1 octets inclusive.</li></ul>
  * \param[out] output    The buffer holding the output data.
  *                  <ul><li>For KW mode: Must be at least 8 bytes larger than \p in_len.</li>
- *                  <li>For KWP mode:  Must be at least  8 bytes larger rounded up to a multiple of
+ *                  <li>For KWP mode: Must be at least 8 bytes larger rounded up to a multiple of
  *                  8 bytes for KWP (15 bytes at most).</li></ul>
- * \param[out] out_len   The length of the actual length being written.
+ * \param[out] out_len   The actual length of the output being written.
  *
  * \return          \c 0 on success.
  * \return          A key wrapping or cipher-specific error code on failure.

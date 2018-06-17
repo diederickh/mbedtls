@@ -58,7 +58,7 @@ void nist_kw_lengths( int in_len, int mode, int iswrap, int res )
 
 
     TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, MBEDTLS_CIPHER_ID_AES,
-                                     key, 8 * sizeof( key ), iswrap ) == 0 );
+                                         key, 8 * sizeof( key ), iswrap ) == 0 );
     if ( iswrap == 1)
     {
         TEST_ASSERT( mbedtls_nist_kw_wrap( &ctx, mode, plaintext, in_len,
@@ -74,7 +74,7 @@ void nist_kw_lengths( int in_len, int mode, int iswrap, int res )
     else
     {
          unwrap_ret = mbedtls_nist_kw_unwrap( &ctx, mode,  ciphertext, in_len,
-                                    plaintext, &output_len );
+                                              plaintext, &output_len );
 
         if( res == 0 )
             TEST_ASSERT( unwrap_ret == MBEDTLS_ERR_CIPHER_AUTH_FAILED );
@@ -91,8 +91,8 @@ exit:
 
 /* BEGIN_CASE */
 void mbedtls_nist_kw_wrap( int cipher_id, int mode,
-                        char *key_hex, char *msg_hex,
-                        char *result_hex )
+                           char *key_hex, char *msg_hex,
+                           char *result_hex )
 {
     unsigned char key[32];
     unsigned char msg[512];
@@ -128,8 +128,8 @@ exit:
 
 /* BEGIN_CASE */
 void mbedtls_nist_kw_unwrap( int cipher_id, int mode,
-                        char *key_hex, char *msg_hex,
-                        char *result_hex )
+                             char *key_hex, char *msg_hex,
+                             char *result_hex )
 {
     unsigned char key[32];
     unsigned char msg[528];
