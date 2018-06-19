@@ -223,7 +223,7 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
     }
     else
     /*
-     * Do the wrapping function W, as defined in SP 800-38F section 6.1
+     * Do the wrapping function W, as defined in RFC 3394 section 2.2.1
      */
     {
         if( semiblocks < MIN_SEMIBLOCKS_COUNT )
@@ -244,13 +244,10 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
             {
                 A[i] ^= ( unsigned char )( ( t >> ( ( sizeof( t ) - 1 - i ) * 8 ) )  & 0xff );
             }
-
-            /* shift output semiblocks  */
-            for( i = 1; i < semiblocks - 1; i++ )
-                memcpy( output + ( i * KW_SEMIBLOCK_LENGTH ), output + ( ( i + 1 ) * KW_SEMIBLOCK_LENGTH ), KW_SEMIBLOCK_LENGTH );
-
-            /* Set the last semiblock as LSB64 of outbuff*/
-            memcpy( output + ( ( semiblocks - 1 ) * KW_SEMIBLOCK_LENGTH ), outbuff + KW_SEMIBLOCK_LENGTH, KW_SEMIBLOCK_LENGTH );
+            memcpy( R2, outbuff + KW_SEMIBLOCK_LENGTH, KW_SEMIBLOCK_LENGTH );
+            R2 += KW_SEMIBLOCK_LENGTH;
+            if( R2 >= output + ( semiblocks * KW_SEMIBLOCK_LENGTH ) )
+                R2 = output + KW_SEMIBLOCK_LENGTH;
         }
 
         *out_len = semiblocks * KW_SEMIBLOCK_LENGTH;
@@ -266,7 +263,7 @@ cleanup:
 }
 
 /*
- * W-1 function as defined in SP 800-38F section 6.1:
+ * W-1 function as defined in RFC 3394 section 2.2.2:
  */
 static int unwrap( mbedtls_nist_kw_context *ctx,
                    const unsigned char *input, size_t semiblocks,
@@ -278,7 +275,7 @@ static int unwrap( mbedtls_nist_kw_context *ctx,
     uint64_t t = 0;
     unsigned char outbuff[KW_SEMIBLOCK_LENGTH * 2];
     unsigned char inbuff[KW_SEMIBLOCK_LENGTH * 2];
-    unsigned char *R2 = output + KW_SEMIBLOCK_LENGTH ;
+    unsigned char *R = output + ( semiblocks -1 ) * KW_SEMIBLOCK_LENGTH ;
     unsigned char *A = output ;
 
     if( semiblocks < MIN_SEMIBLOCKS_COUNT )
@@ -294,7 +291,7 @@ static int unwrap( mbedtls_nist_kw_context *ctx,
             A[i] ^= ( unsigned char )( ( t >> ( ( sizeof( t ) - 1 - i ) * 8 ) )  & 0xff );
         }
         memcpy( inbuff, A, KW_SEMIBLOCK_LENGTH );
-        memcpy( inbuff + KW_SEMIBLOCK_LENGTH, output + ( semiblocks -1 ) * KW_SEMIBLOCK_LENGTH , KW_SEMIBLOCK_LENGTH );
+        memcpy( inbuff + KW_SEMIBLOCK_LENGTH, R, KW_SEMIBLOCK_LENGTH );
 
         ret = mbedtls_cipher_update( &ctx->cipher_ctx, inbuff, 16, outbuff, &olen);
         if( ret != 0 )
@@ -302,12 +299,12 @@ static int unwrap( mbedtls_nist_kw_context *ctx,
 
         memcpy( A, outbuff, KW_SEMIBLOCK_LENGTH );
 
-        /* shift output semiblocks  */
-        for( i = semiblocks - 2; i > 0; i-- )
-            memcpy( output + ( ( i  + 1 ) * KW_SEMIBLOCK_LENGTH ), output + ( ( i ) * KW_SEMIBLOCK_LENGTH ), KW_SEMIBLOCK_LENGTH );
+        /* Set R as LSB64 of outbuff */
+        memcpy( R, outbuff + KW_SEMIBLOCK_LENGTH, KW_SEMIBLOCK_LENGTH );
+        R -= KW_SEMIBLOCK_LENGTH;
+        if( R < output + KW_SEMIBLOCK_LENGTH )
+            R = output + ( semiblocks -1 ) * KW_SEMIBLOCK_LENGTH;
 
-        /* Set R2 as LSB64 of outbuff */
-        memcpy( R2, outbuff + KW_SEMIBLOCK_LENGTH, KW_SEMIBLOCK_LENGTH );
     }
 
     *out_len = semiblocks * KW_SEMIBLOCK_LENGTH;
