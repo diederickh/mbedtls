@@ -1074,7 +1074,7 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
 
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( out, orig_length );
+        mbedtls_platform_zeroize( out, orig_length );
     return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CBC */
@@ -1294,7 +1294,7 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
 
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( out, orig_length );
+        mbedtls_platform_zeroize( out, orig_length );
     return( ret );
 }
 
@@ -1333,7 +1333,7 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
     }
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( out, orig_length );
+        mbedtls_platform_zeroize( out, orig_length );
     return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CFB */
@@ -1413,7 +1413,7 @@ int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
     *nc_off = n;
 end:
     if ( ret != 0 )
-        mbedtls_zeroize( out, orig_length );
+        mbedtls_platform_zeroize( out, orig_length );
     return( ret );
 }
 #endif /* MBEDTLS_CIPHER_MODE_CTR */
