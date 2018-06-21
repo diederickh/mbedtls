@@ -455,7 +455,6 @@ int mbedtls_ctr_drbg_random_with_add( void *p_rng,
 
     ctx->reseed_counter++;
 
-exit:
     return( ret );
 }
 
