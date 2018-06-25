@@ -93,7 +93,8 @@ void mbedtls_nist_kw_init( mbedtls_nist_kw_context *ctx );
  * \param isWrap    Specify whether the operation within the context is wrapping or unwrapping
  *
  * \return          \c 0 on success.
- * \return          A key wrapping or cipher-specific error code on failure.
+ * \return          \c MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA for any invalid input.
+ * \return          cipher-specific error code on failure of the underlying cipher.
  */
 int mbedtls_nist_kw_setkey( mbedtls_nist_kw_context *ctx,
                             mbedtls_cipher_id_t cipher,
@@ -117,8 +118,8 @@ void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
  *                  The input uses units of 8 Bytes called semiblocks.
- *                  <ul><li>For KW mode: a multiple of 8 bytes between 2 to 2^54-1 semiblocks inclusive. </li>
- *                  <li>For KWP mode: any length between 1 and 2^32-1 octets inclusive.</li></ul>
+ *                  <ul><li>For KW mode: a multiple of 8 bytes between 16 to 2^57-8 inclusive. </li>
+ *                  <li>For KWP mode: any length between 1 and 2^32-1 inclusive.</li></ul>
  * \param[out] output    The buffer holding the output data.
  *                  <ul><li>For KW mode: Must be at least 8 bytes larger than \p in_len.</li>
  *                  <li>For KWP mode: Must be at least 8 bytes larger rounded up to a multiple of
@@ -126,7 +127,8 @@ void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
  * \param[out] out_len   The actual length of the output being written.
  *
  * \return          \c 0 on success.
- * \return          A key wrapping or cipher-specific error code on failure.
+ * \return          \c MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA for invalid input length.
+ * \return          cipher-specific error code on failure of the underlying cipher.
  */
 int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t mode,
                           const unsigned char *input, size_t in_len,
@@ -141,8 +143,8 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
  * \param in_len    The length of the input data in Bytes.
  *                  The input uses units of 8 Bytes called semiblocks.
  *                  The input must be a multiple of semiblocks.
- *                  <ul><li>For KW mode: a multiple of 8 bytes between 3 to 2^54 semiblocks inclusive. </li>
- *                  <li>For KWP mode: a multiple of 8 bytes between 2 to 2^29 semiblocks inclusive.</li></ul>
+ *                  <ul><li>For KW mode: a multiple of 8 bytes between 24 to 2^57 inclusive. </li>
+ *                  <li>For KWP mode: a multiple of 8 bytes between 16 to 2^32 inclusive.</li></ul>
  * \param[out] output    The buffer holding the output data.
  *                  The output buffer's minimal length is 8 bytes shorter than \p in_len.
  * \param[out] out_len   The length of the actual length being written.
@@ -150,7 +152,9 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
  *                  depending on how much padding was added to the data.
  *
  * \return          \c 0 on success.
- * \return          A key wrapping or cipher-specific error code on failure.
+ * \return          \c MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA for invalid input length.
+ * \return          \c MBEDTLS_ERR_CIPHER_AUTH_FAILED for verification failure of the ciphertext.
+ * \return          cipher-specific error code on failure of the underlying cipher.
  */
 int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t mode,
                             const unsigned char *input, size_t in_len,
