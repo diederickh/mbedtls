@@ -105,27 +105,30 @@ int mbedtls_nist_kw_setkey( mbedtls_nist_kw_context *ctx,
      *  block cipher that fits this profile."
      */
     if( cipher != MBEDTLS_CIPHER_ID_AES )
-        return( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
+        return ( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
 
-    cipher_info = mbedtls_cipher_info_from_values( cipher, keybits, MBEDTLS_MODE_ECB );
+    cipher_info = mbedtls_cipher_info_from_values( cipher,
+                                                   keybits,
+                                                   MBEDTLS_MODE_ECB );
     if( cipher_info == NULL )
-        return( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
+        return ( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
 
     if( cipher_info->block_size != 16 )
-        return( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
+        return ( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
 
     mbedtls_cipher_free( &ctx->cipher_ctx );
 
     if( ( ret = mbedtls_cipher_setup( &ctx->cipher_ctx, cipher_info ) ) != 0 )
-        return( ret );
+        return ( ret );
 
     if( ( ret = mbedtls_cipher_setkey( &ctx->cipher_ctx, key, keybits,
-                               is_wrap ? MBEDTLS_ENCRYPT : MBEDTLS_DECRYPT ) ) != 0 )
+                                       is_wrap ? MBEDTLS_ENCRYPT : MBEDTLS_DECRYPT )
+                                     ) != 0 )
     {
-        return( ret );
+        return ( ret );
     }
 
-    return( 0 );
+    return ( 0 );
 }
 
 /*
@@ -152,8 +155,8 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
     uint64_t t = 0;
     unsigned char outbuff[KW_SEMIBLOCK_LENGTH * 2];
     unsigned char inbuff[KW_SEMIBLOCK_LENGTH * 2];
-    unsigned char* R2 = output + KW_SEMIBLOCK_LENGTH;
-    unsigned char* A = output ;
+    unsigned char *R2 = output + KW_SEMIBLOCK_LENGTH;
+    unsigned char *A = output ;
     const uint32_t ICV1[] = NIST_KW_ICV1;
     const uint32_t ICV2[] = NIST_KW_ICV2;
 
@@ -204,8 +207,8 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
         memcpy( output, &ICV2, KW_SEMIBLOCK_LENGTH / 2 );
         PUT_UINT32_BE( ( in_len & 0xffffffff ), output, KW_SEMIBLOCK_LENGTH / 2 );
 
-        memcpy( output + ( KW_SEMIBLOCK_LENGTH / 2 ) + sizeof(uint32_t), input, in_len );
-        memset( output + ( KW_SEMIBLOCK_LENGTH / 2 ) + sizeof(uint32_t) + in_len, 0, padlen );
+        memcpy( output + KW_SEMIBLOCK_LENGTH, input, in_len );
+        memset( output + KW_SEMIBLOCK_LENGTH + in_len, 0, padlen );
     }
     semiblocks = ( ( in_len + padlen ) / KW_SEMIBLOCK_LENGTH ) + 1;
 
@@ -227,7 +230,7 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
      */
     {
         if( semiblocks < MIN_SEMIBLOCKS_COUNT )
-            return MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA;
+            return ( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
 
         /* Calculate intermediate values */
         for( t = 1; t <= s; t++ )
@@ -259,7 +262,7 @@ cleanup:
     mbedtls_platform_zeroize( inbuff, KW_SEMIBLOCK_LENGTH * 2 );
     mbedtls_platform_zeroize( outbuff, KW_SEMIBLOCK_LENGTH * 2 );
     mbedtls_cipher_finish( &ctx->cipher_ctx, NULL, &olen );
-    return ret;
+    return ( ret );
 }
 
 /*
@@ -279,7 +282,7 @@ static int unwrap( mbedtls_nist_kw_context *ctx,
     unsigned char *A = output ;
 
     if( semiblocks < MIN_SEMIBLOCKS_COUNT )
-        return MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA;
+        return ( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
 
     memcpy( output, input, semiblocks * KW_SEMIBLOCK_LENGTH );
 
@@ -315,7 +318,7 @@ cleanup:
     mbedtls_platform_zeroize( inbuff, KW_SEMIBLOCK_LENGTH * 2 );
     mbedtls_platform_zeroize( outbuff, KW_SEMIBLOCK_LENGTH * 2 );
 
-    return ret;
+    return ( ret );
 }
 
 /*
@@ -430,7 +433,7 @@ cleanup:
         mbedtls_platform_zeroize( output, *out_len - 1);
 
     mbedtls_cipher_finish( &ctx->cipher_ctx, NULL, &i );
-    return( ret );
+    return ( ret );
 }
 
 #endif /* !MBEDTLS_NIST_KW_ALT */
@@ -639,9 +642,9 @@ end:
         mbedtls_printf( "\n" );
 
     if( ret != 0 )
-        return( 1 );
+        return ( 1 );
     else
-        return( 0 );
+        return ( 0 );
 }
 
 #endif /* MBEDTLS_SELF_TEST && MBEDTLS_AES_C */
