@@ -118,7 +118,7 @@ void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
  * \param input     The buffer holding the input data.
  * \param in_len    The length of the input data in Bytes.
  *                  The input uses units of 8 Bytes called semiblocks.
- *                  <ul><li>For KW mode: a multiple of 8 bytes between 16 to 2^57-8 inclusive. </li>
+ *                  <ul><li>For KW mode: a multiple of 8 bytes between 16 and 2^57-8 inclusive. </li>
  *                  <li>For KWP mode: any length between 1 and 2^32-1 inclusive.</li></ul>
  * \param[out] output    The buffer holding the output data.
  *                  <ul><li>For KW mode: Must be at least 8 bytes larger than \p in_len.</li>
@@ -143,8 +143,8 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
  * \param in_len    The length of the input data in Bytes.
  *                  The input uses units of 8 Bytes called semiblocks.
  *                  The input must be a multiple of semiblocks.
- *                  <ul><li>For KW mode: a multiple of 8 bytes between 24 to 2^57 inclusive. </li>
- *                  <li>For KWP mode: a multiple of 8 bytes between 16 to 2^32 inclusive.</li></ul>
+ *                  <ul><li>For KW mode: a multiple of 8 bytes between 24 and 2^57 inclusive. </li>
+ *                  <li>For KWP mode: a multiple of 8 bytes between 16 and 2^32 inclusive.</li></ul>
  * \param[out] output    The buffer holding the output data.
  *                  The output buffer's minimal length is 8 bytes shorter than \p in_len.
  * \param[out] out_len   The length of the actual length being written.
