@@ -21,35 +21,29 @@ NIST KW init #5 BLOWFISH-128: bad cipher
 depends_on:MBEDTLS_BLOWFISH_C
 mbedtls_nist_kw_setkey:MBEDTLS_CIPHER_ID_BLOWFISH:128:0:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
 
-NIST KW lengths #1 KW plaintext OK ( 2 to 2^54 - 1 semiblocks )
-nist_kw_lengths:16:MBEDTLS_KW_MODE_KW:1:0
+NIST KW lengths #1 KW plaintext OK (2 to 2^54 - 1 semiblocks)
+nist_kw_plaintext_lengths:16:MBEDTLS_KW_MODE_KW:0
 
-NIST KW lengths #2 KWP plaintext OK ( 1 to 2^32 - 1 octets )
-nist_kw_lengths:5:MBEDTLS_KW_MODE_KWP:1:0
+NIST KW lengths #2 KWP plaintext OK (1 to 2^32 - 1 octets)
+nist_kw_plaintext_lengths:5:MBEDTLS_KW_MODE_KWP:0
 
-NIST KW lengths #3 KW ciphertext OK ( 3 to 2^54 semiblocks )
-nist_kw_lengths:32:MBEDTLS_KW_MODE_KW:0:0
+NIST KW lengths #3 KW ciphertext OK (3 to 2^54 semiblocks)
+nist_kw_ciphertext_lengths:32:MBEDTLS_KW_MODE_KW:0
 
-NIST KW lengths #4 KWP ciphertext OK ( 2 to 2^29 semiblocks semiblocks )
-nist_kw_lengths:24:MBEDTLS_KW_MODE_KWP:0:0
+NIST KW lengths #4 KWP ciphertext OK (2 to 2^29 semiblocks semiblocks)
+nist_kw_ciphertext_lengths:24:MBEDTLS_KW_MODE_KWP:0
 
-NIST KW lengths #5 KW plaintext too short ( 2 to 2^54 - 1 semiblocks )
-nist_kw_lengths:5:MBEDTLS_KW_MODE_KW:1:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
+NIST KW lengths #5 KW plaintext too short (2 to 2^54 - 1 semiblocks)
+nist_kw_plaintext_lengths:5:MBEDTLS_KW_MODE_KW:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
 
-NIST KW lengths #6 KWP plaintext too short ( 1 to 2^32 - 1 octets )
-nist_kw_lengths:0:MBEDTLS_KW_MODE_KWP:1:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
-
-NIST KW lengths #7 KWP plaintext too long ( 1 to 2^32 - 1 octets )
-nist_kw_lengths:4294967296:MBEDTLS_KW_MODE_KWP:1:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
+NIST KW lengths #6 KWP plaintext too short (1 to 2^32 - 1 octets)
+nist_kw_plaintext_lengths:0:MBEDTLS_KW_MODE_KWP:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
 
 NIST KW lengths #8 KW ciphertext too short (3 to 2^54 semiblocks)
-nist_kw_lengths:16:MBEDTLS_KW_MODE_KW:0:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
+nist_kw_ciphertext_lengths:16:MBEDTLS_KW_MODE_KW:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
 
-NIST KW lengths #9 KWP ciphertext too short ( 2 to 2^29 semiblocks semiblocks )
-nist_kw_lengths:8:MBEDTLS_KW_MODE_KWP:0:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
-
-NIST KW lengths #10 KWP ciphertext too long ( 2 to 2^29 semiblocks semiblocks )
-nist_kw_lengths:4294967297:MBEDTLS_KW_MODE_KWP:0:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
+NIST KW lengths #9 KWP ciphertext too short (2 to 2^29 semiblocks semiblocks)
+nist_kw_ciphertext_lengths:8:MBEDTLS_KW_MODE_KWP:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
 
 NIST KW wrap AES-128 CAVS 17.4 PLAINTEXT LENGTH = 128 count 7
 depends_on:MBEDTLS_AES_C
