@@ -9,9 +9,9 @@ NIST KW init #2 unwrapping AES-128: OK
 depends_on:MBEDTLS_AES_C
 mbedtls_nist_kw_setkey:MBEDTLS_CIPHER_ID_AES:128:1:0
 
-NIST KW init #3 CAMELLIA-256: bad cipher
+NIST KW init #3 CAMELLIA-256: unsupported cipher
 depends_on:MBEDTLS_CAMELLIA_C
-mbedtls_nist_kw_setkey:MBEDTLS_CIPHER_ID_CAMELLIA:256:0:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
+mbedtls_nist_kw_setkey:MBEDTLS_CIPHER_ID_CAMELLIA:256:0:MBEDTLS_ERR_CIPHER_FEATURE_UNAVAILABLE
 
 NIST KW init #4 AES-224: bad key size
 depends_on:MBEDTLS_AES_C

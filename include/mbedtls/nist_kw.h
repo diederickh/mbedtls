@@ -88,10 +88,12 @@ void mbedtls_nist_kw_init( mbedtls_nist_kw_context *ctx );
  * \param cipher    The 128-bit block cipher to use. Only AES is supported.
  * \param key       The Key Encryption Key (KEK).
  * \param keybits   The KEK size in bits. This must be acceptable by the cipher.
- * \param isWrap    Specify whether the operation within the context is wrapping or unwrapping
+ * \param is_wrap   Specify whether the operation within the context is wrapping or unwrapping
  *
  * \return          \c 0 on success.
  * \return          \c MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA for any invalid input.
+ * \return          \c MBEDTLS_ERR_CIPHER_FEATURE_UNAVAILABLE for 128 bit block ciphers
+ *                  which are not supported by the algorithm.
  * \return          cipher-specific error code on failure of the underlying cipher.
  */
 int mbedtls_nist_kw_setkey( mbedtls_nist_kw_context *ctx,
