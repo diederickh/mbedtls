@@ -14,8 +14,6 @@
  * https://tools.ietf.org/html/rfc3394
  * https://tools.ietf.org/html/rfc5649
  *
- * Note: RFC 5649 defines the object IDs for KW and KWP, which is not supported.
- *
  */
 /*
  *  Copyright (C) 2018, Arm Limited (or its affiliates), All Rights Reserved
