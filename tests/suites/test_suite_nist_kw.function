@@ -15,7 +15,8 @@ void mbedtls_nist_kw_self_test( )
 /* END_CASE */
 
 /* BEGIN_CASE */
-void mbedtls_nist_kw_setkey( int cipher_id, int key_size, int is_wrap, int result )
+void mbedtls_nist_kw_setkey( int cipher_id, int key_size,
+                             int is_wrap, int result )
 {
     mbedtls_nist_kw_context ctx;
     unsigned char key[32];
@@ -64,7 +65,8 @@ void nist_kw_plaintext_lengths( int in_len, int mode, int res )
     if( res == 0 )
     {
         if( mode == MBEDTLS_KW_MODE_KWP )
-            TEST_ASSERT( output_len == (size_t) in_len + 8 - ( in_len % 8 ) + 8 );
+            TEST_ASSERT( output_len == (size_t) in_len + 8 -
+                         ( in_len % 8 ) + 8 );
         else
             TEST_ASSERT( output_len == (size_t) in_len + 8 );
     }
@@ -144,7 +146,8 @@ void mbedtls_nist_kw_wrap( int cipher_id, int mode,
     msg_len = unhexify( msg, msg_hex );
     result_len = unhexify( expected_result, result_hex );
 
-    TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, cipher_id, key, key_len * 8, 1 ) == 0 );
+    TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, cipher_id, key, key_len * 8, 1 )
+                 == 0 );
 
     /* Test with input == output */
     TEST_ASSERT( mbedtls_nist_kw_wrap( &ctx, mode, msg, msg_len,
@@ -183,7 +186,8 @@ void mbedtls_nist_kw_unwrap( int cipher_id, int mode,
 
     result_len = unhexify( expected_result, result_hex );
 
-    TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, cipher_id, key, key_len * 8, 0 ) == 0 );
+    TEST_ASSERT( mbedtls_nist_kw_setkey( &ctx, cipher_id, key, key_len * 8, 0 )
+                 == 0 );
 
     /* Test with input == output */
     TEST_ASSERT( mbedtls_nist_kw_unwrap( &ctx, mode, msg, msg_len,

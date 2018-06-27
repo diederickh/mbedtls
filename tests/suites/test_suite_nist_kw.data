@@ -30,7 +30,7 @@ nist_kw_plaintext_lengths:5:MBEDTLS_KW_MODE_KWP:0
 NIST KW lengths #3 KW ciphertext OK (3 to 2^54 semiblocks)
 nist_kw_ciphertext_lengths:32:MBEDTLS_KW_MODE_KW:0
 
-NIST KW lengths #4 KWP ciphertext OK (2 to 2^29 semiblocks semiblocks)
+NIST KW lengths #4 KWP ciphertext OK (2 to 2^29 semiblocks)
 nist_kw_ciphertext_lengths:24:MBEDTLS_KW_MODE_KWP:0
 
 NIST KW lengths #5 KW plaintext too short (2 to 2^54 - 1 semiblocks)
@@ -42,7 +42,7 @@ nist_kw_plaintext_lengths:0:MBEDTLS_KW_MODE_KWP:MBEDTLS_ERR_CIPHER_BAD_INPUT_DAT
 NIST KW lengths #8 KW ciphertext too short (3 to 2^54 semiblocks)
 nist_kw_ciphertext_lengths:16:MBEDTLS_KW_MODE_KW:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
 
-NIST KW lengths #9 KWP ciphertext too short (2 to 2^29 semiblocks semiblocks)
+NIST KW lengths #9 KWP ciphertext too short (2 to 2^29 semiblocks)
 nist_kw_ciphertext_lengths:8:MBEDTLS_KW_MODE_KWP:MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
 
 NIST KW wrap AES-128 CAVS 17.4 PLAINTEXT LENGTH = 128 count 7
