@@ -92,8 +92,8 @@ void mbedtls_nist_kw_init( mbedtls_nist_kw_context *ctx );
  *
  * \return          \c 0 on success.
  * \return          \c MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA for any invalid input.
- * \return          \c MBEDTLS_ERR_CIPHER_FEATURE_UNAVAILABLE for 128 bit block ciphers
- *                  which are not supported by the algorithm.
+ * \return          \c MBEDTLS_ERR_CIPHER_FEATURE_UNAVAILABLE for 128-bit block ciphers
+ *                  which are not supported.
  * \return          cipher-specific error code on failure of the underlying cipher.
  */
 int mbedtls_nist_kw_setkey( mbedtls_nist_kw_context *ctx,
