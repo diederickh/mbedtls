@@ -260,7 +260,10 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
 cleanup:
 
     if( ret != 0)
+    {
         mbedtls_platform_zeroize( output, semiblocks * KW_SEMIBLOCK_LENGTH );
+        *out_len = 0;
+    }
     mbedtls_platform_zeroize( inbuff, KW_SEMIBLOCK_LENGTH * 2 );
     mbedtls_platform_zeroize( outbuff, KW_SEMIBLOCK_LENGTH * 2 );
     mbedtls_cipher_finish( &ctx->cipher_ctx, NULL, &olen );
@@ -348,6 +351,7 @@ int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t
 #endif
             )
         {
+            *out_len = 0;
             return( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
         }
 
@@ -384,6 +388,7 @@ int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t
 #endif
           )
         {
+            *out_len = 0;
             return( MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA );
         }
 
@@ -432,7 +437,10 @@ int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t
 
 cleanup:
     if( ret != 0 )
+    {
         mbedtls_platform_zeroize( output, *out_len - 1);
+        *out_len = 0;
+    }
 
     mbedtls_cipher_finish( &ctx->cipher_ctx, NULL, &i );
     return( ret );

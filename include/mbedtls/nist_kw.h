@@ -124,7 +124,7 @@ void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx );
  *                  <ul><li>For KW mode: Must be at least 8 bytes larger than \p in_len.</li>
  *                  <li>For KWP mode: Must be at least 8 bytes larger rounded up to a multiple of
  *                  8 bytes for KWP (15 bytes at most).</li></ul>
- * \param[out] out_len   The actual length of the output being written.
+ * \param[out] out_len   The actual length of the output being written. \c 0 on failure.
  *
  * \return          \c 0 on success.
  * \return          \c MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA for invalid input length.
@@ -149,7 +149,7 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx, mbedtls_nist_kw_mode_t m
  *                  The output buffer's minimal length is 8 bytes shorter than \p in_len.
  * \param[out] out_len   The length of the actual length being written.
  *                  For KWP mode, the length could be up to 15 bytes shorter than \p in_len,
- *                  depending on how much padding was added to the data.
+ *                  depending on how much padding was added to the data. \c 0 on failure.
  *
  * \return          \c 0 on success.
  * \return          \c MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA for invalid input length.

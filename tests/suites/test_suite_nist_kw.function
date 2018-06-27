@@ -68,6 +68,10 @@ void nist_kw_plaintext_lengths( int in_len, int mode, int res )
         else
             TEST_ASSERT( output_len == (size_t) in_len + 8 );
     }
+    else
+    {
+        TEST_ASSERT( output_len == 0 );
+    }
 
 exit:
     mbedtls_free( ciphertext );
@@ -108,6 +112,8 @@ void nist_kw_ciphertext_lengths( int in_len, int mode, int res )
         TEST_ASSERT( unwrap_ret == MBEDTLS_ERR_CIPHER_AUTH_FAILED );
     else
         TEST_ASSERT( unwrap_ret == res );
+
+    TEST_ASSERT( output_len == 0 );
 
 exit:
     mbedtls_free( ciphertext );
@@ -186,6 +192,10 @@ void mbedtls_nist_kw_unwrap( int cipher_id, int mode,
     {
         TEST_ASSERT( output_len == result_len );
         TEST_ASSERT( memcmp( expected_result, result, result_len ) == 0 );
+    }
+    else
+    {
+        TEST_ASSERT( output_len == 0 );
     }
 
 exit:
