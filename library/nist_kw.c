@@ -177,7 +177,7 @@ int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx,
          * must be between 2 to 2^54-1 semiblocks inclusive.
          */
         if( in_len < 8
-#if SIZE_MAX > 0xFFFFFFFF
+#if SIZE_MAX > 0x1FFFFFFFFFFFFF8
             || in_len > 0x1FFFFFFFFFFFFF8
 #endif
            )
@@ -358,7 +358,7 @@ int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx,
          * must be between 3 to 2^54 semiblocks inclusive.
          */
         if( in_len < 24
-#if SIZE_MAX > 0xFFFFFFFF
+#if SIZE_MAX > 0x200000000000000
             || in_len > 0x200000000000000
 #endif
             )
@@ -398,7 +398,7 @@ int mbedtls_nist_kw_unwrap( mbedtls_nist_kw_context *ctx,
          * must be between 2 to 2^29 semiblocks inclusive.
          */
         if( in_len < KW_SEMIBLOCK_LENGTH * 2
-#if SIZE_MAX > 0xFFFFFFFF
+#if SIZE_MAX > 0x100000000
             || in_len > 0x100000000
 #endif
           )
