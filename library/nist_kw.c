@@ -153,17 +153,17 @@ void mbedtls_nist_kw_free( mbedtls_nist_kw_context *ctx )
 int mbedtls_nist_kw_wrap( mbedtls_nist_kw_context *ctx,
                           mbedtls_nist_kw_mode_t mode,
                           const unsigned char *input, size_t in_len,
-                          unsigned char *output, size_t* out_len )
+                          unsigned char *output, size_t *out_len )
 {
     int ret = 0;
     size_t semiblocks = 0;
-    size_t s ;
+    size_t s;
     size_t olen, i, padlen = 0;
     uint64_t t = 0;
     unsigned char outbuff[KW_SEMIBLOCK_LENGTH * 2];
     unsigned char inbuff[KW_SEMIBLOCK_LENGTH * 2];
     unsigned char *R2 = output + KW_SEMIBLOCK_LENGTH;
-    unsigned char *A = output ;
+    unsigned char *A = output;
     const uint32_t ICV1[] = NIST_KW_ICV1;
     const uint32_t ICV2[] = NIST_KW_ICV2;
 

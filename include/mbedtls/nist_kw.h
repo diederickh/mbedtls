@@ -1,7 +1,7 @@
 /**
  * \file nist_kw.h
  *
- * \brief This file provides API for key wrapping(KW)
+ * \brief This file provides an API for key wrapping (KW)
  *        and key wrapping with padding (KWP) as defined in NIST SP 800-38F
  *        https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38F.pdf
  *
@@ -39,16 +39,15 @@
 
 #include "cipher.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum
 {
     MBEDTLS_KW_MODE_KW = 0,
     MBEDTLS_KW_MODE_KWP = 1
 } mbedtls_nist_kw_mode_t;
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #if !defined(MBEDTLS_NIST_KW_ALT)
 // Regular implementation
@@ -63,8 +62,7 @@ extern "C" {
  */
 typedef struct {
     mbedtls_cipher_context_t cipher_ctx;    /*!< The cipher context used. */
-}
-mbedtls_nist_kw_context;
+} mbedtls_nist_kw_context;
 
 #else  /* MBEDTLS_NIST_key wrapping_ALT */
 #include "nist_kw_alt.h"
